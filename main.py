@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 import random
 
 
-#Getting The Data
+#Getting The Data-JP Quotes
 url='https://www.overallmotivation.com/quotes/jordan-peterson-quotes/'
 page=urlopen(url)
 soup = BeautifulSoup(page, 'html.parser')
@@ -21,13 +21,17 @@ for e in soup.find_all('ol'):
     for item in e.find_all('li'):
         quotes.append(item.get_text())
 
+#Adding new functionality
+sad_words=["Sad", "sad", "depressed", "angry", "frustrated", "miserable", "depressing"]
+
+encourage_words= ["Ok, Clean your room.", "Embrace The Chaos", "Rule-3: Treat yourself as someone you are responsible for helping"]
+
 
 #creating/instantiating a discord client
 client = discord.Client()
 
 def get_quote():
-  x=random.randrange(0,66)
-  msg = quotes[x]
+  msg = random.choice(quotes)
   return (msg)
 
 #defining bot functionality
@@ -36,15 +40,21 @@ async def on_ready():
   print('We have logged in as {0.user}'.format(client))
 
 @client.event
-async def on_message(msg):
-  if msg.author == client.user:
+async def on_message(message):
+  if message.author == client.user:
     return
   
-  if msg.content.startswith('$hello'):
-    await msg.channel.send("Hey There, Have you cleaned your room ?")
-  elif msg.content.startswith('$inspire'):
+  msg = message.content
+
+  if msg.startswith('$hello'):
+    await message.channel.send("Hey There, Have you cleaned your room ?")
+  
+  if msg.startswith('$inspire'):
     quote =get_quote()
-    await msg.channel.send(quote)
+    await message.channel.send(quote)
+
+  if any (word in msg for word in sad_words):
+    await message.channel.send(random.choice(encourage_words))
 
 
 client.run(os.environ['token'])
