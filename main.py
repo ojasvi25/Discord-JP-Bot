@@ -8,7 +8,7 @@ import pandas
 from urllib.request import urlopen
 from bs4 import BeautifulSoup
 import random
-
+from keep_alive import keep_alive
 
 #Getting The Data-JP Quotes
 url='https://www.overallmotivation.com/quotes/jordan-peterson-quotes/'
@@ -57,6 +57,7 @@ async def on_message(message):
     await message.channel.send(random.choice(encourage_words))
 
 
+keep_alive()
 client.run(os.environ['token'])
 
 
